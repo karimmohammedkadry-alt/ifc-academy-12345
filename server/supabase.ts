@@ -1,27 +1,12 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-let client: SupabaseClient | null = null;
-let clientKey = '';
-let clientUrl = '';
-
-export function normalizeSupabaseUrl(url: string) {
-  return url.trim().replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
-}
-
 export function getSupabase(): SupabaseClient | null {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || (process.env.NODE_ENV === 'production' ? '' : process.env.SUPABASE_ANON_KEY || '');
-  if (!url || !key) return null;
-  const normalized = normalizeSupabaseUrl(url);
+  const url = process.env.SUPABASE_URL || "https://kdarnnjsexoexncbazvr.supabase.co";
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || "sb_secret_dzeq5Y3GoMEF@F0ULTQl0_SL6IZ_nA";
   
-  if (!client || clientKey !== key || clientUrl !== normalized) {
-    client = createClient(normalized, key, { auth: { persistSession: false, autoRefreshToken: false } });
-    clientKey = key;
-    clientUrl = normalized;
-  }
-  return client;
+  return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
 }
 
 export function isSupabaseConfigured() {
-  return Boolean(process.env.SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || (process.env.NODE_ENV !== 'production' && process.env.SUPABASE_ANON_KEY)));
+  return true;
 }
