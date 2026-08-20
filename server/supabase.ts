@@ -1,8 +1,8 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 export function getSupabase(): SupabaseClient | null {
-  const url = process.env.SUPABASE_URL || "https://kdarnnjsexoexncbazvr.supabase.co";
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || "sb_secret_dxeq5Y36oMEHRF0OuLT0IQ_SL8Iz_aA";
+  const url = "https://kdarnnjsexoexncbazvr.supabase.co";
+  const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkYXJubmpzZXhvZXhuY2JhenZyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4Njk3Njg4OCwiZXhwIjoyMTAyNTUyODg4fQ.KJGqZ4XPGgHGg5vZdU7ckDZJJjJLSe0qOZ7TSvYHfGk";
   
   return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
 }
