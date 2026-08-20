@@ -1,7 +1,27 @@
-import path from 'path';
-import express from 'express';
-import { createServer as createViteServer } from 'vite';
-import { app } from './server/app';
-const PORT = Number(process.env.PORT || 3000);
-async function start(){ if(process.env.NODE_ENV !== 'production'){ const vite=await createViteServer({server:{middlewareMode:true},appType:'spa'}); app.use(vite.middlewares); } else { const dist=path.join(process.cwd(),'dist'); app.use(express.static(dist)); app.get('*',(_req,res)=>res.sendFile(path.join(dist,'index.html'))); } app.listen(PORT,'0.0.0.0',()=>console.log(`IFC Academy running on ${PORT}`)); }
-start();
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
+let client: SupabaseClient | null = null;
+let clientKey = '';
+let clientUrl = '';
+
+export function normalizeSupabaseUrl(url: string) {
+  return url.trim().replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
+}
+
+export function getSupabase(): SupabaseClient | null {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || (process.env.NODE_ENV === 'production' ? '' : process.env.SUPABASE_ANON_KEY || '');
+  if (!url || !key) return null;
+  const normalized = normalizeSupabaseUrl(url);
+  
+  if (!client || clientKey !== key || clientUrl !== normalized) {
+    client = createClient(normalized, key, { auth: { persistSession: false, autoRefreshToken: false } });
+    clientKey = key;
+    clientUrl = normalized;
+  }
+  return client;
+}
+
+export function isSupabaseConfigured() {
+  return Boolean(process.env.SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || (process.env.NODE_ENV !== 'production' && process.env.SUPABASE_ANON_KEY)));
+}
