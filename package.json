@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build",
+    "build": "vite build && npx esbuild server/app.ts --bundle --platform=node --format=esm --external:@supabase/supabase-js --external:express --external:googleapis --external:xlsx --external:bcryptjs --external:cookie-parser --external:uuid --outfile=server/app.js",
     "start": "node dist/server.cjs",
-    "clean": "rm -rf dist server.js",
+    "clean": "rm -rf dist server.js server/app.js",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },
